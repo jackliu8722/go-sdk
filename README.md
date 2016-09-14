@@ -1,5 +1,7 @@
 # 点触验证码 Golang SDK
 
+#####[其他语言SDK以及JS API https://github.com/touclick/captcha-demo](https://github.com/touclick/captcha-demo)
+
 ## 开发环境
 
  - Golang (推荐1.4.1以上版本）
