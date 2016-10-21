@@ -32,30 +32,32 @@ type Touclick struct{
 type Status struct{
     Code int
     Msg string
+    CheckCode string
 }
 
 type result struct {
     Code int  `json:"code"`
     Message string `json:"message"`
     Sign string `json:"sign"`
+    CKCode string `json:"ckCode"`
 }
 
 var StatusMap = make(map[string]*Status)
 var checkAddressPattern *regexp.Regexp
 func init(){
     StatusMap["STATUS_OK"] = &Status{Code : 0, Msg : ""}
-    StatusMap["STATUS_TOKEN_EXPIRED"] = &Status{Code : 1, Msg : "该验证已过期"}
-    StatusMap["STATUS_NO_PUBKEY_ERROR"] = &Status{Code : 2, Msg : "公钥不可为空"}
-    StatusMap["STATUS_TOKEN_ERROR"] = &Status{Code : 3, Msg : "一次验证返回的token为必需参数,不可为空"}
-    StatusMap["STATUS_PUBKEY_ERROR"] = &Status{Code : 4, Msg : "公钥不正确"}
-    StatusMap["CHECKCODE_ERROR"] = &Status{Code : 5, Msg : "CheckCode有误,请确认CheckCode是否和一次验证传递一致"}
-    StatusMap["STATUS_PARAM_ERROR"] = &Status{Code : 6, Msg : "sign加密错误,请检查参数是否正确"}
-    StatusMap["STATUS_VERIFY_ERROR"] = &Status{Code : 7, Msg : "一次验证错误"}
-    StatusMap["STATUS_SERVER_ERROR"] = &Status{Code : 8, Msg : "点触服务器异常"}
-    StatusMap["STATUS_HTTP_ERROR"] = &Status{Code : 9, Msg : "http请求异常"}
-    StatusMap["STATUS_JSON_TRANS_ERROR"] = &Status{Code : 10, Msg : "json转换异常,可能是请求地址有误,请检查请求地址(http://[checkAddress].touclick.com/sverify.touclick?参数)"}
-    StatusMap["STATUS_CHECKADDRESS_ERROR"] = &Status{Code : 11, Msg : "二次验证地址不合法"}
-    StatusMap["SIGN_ERROR"] = &Status{Code : 12, Msg : "签名校验失败,数据可能被篡改"}
+    StatusMap["STATUS_TOKEN_EXPIRED"] = &Status{Code : 1, Msg : "该验证已过期",CheckCode: ""}
+    StatusMap["STATUS_NO_PUBKEY_ERROR"] = &Status{Code : 2, Msg : "公钥不可为空",CheckCode: ""}
+    StatusMap["STATUS_TOKEN_ERROR"] = &Status{Code : 3, Msg : "一次验证返回的token为必需参数,不可为空",CheckCode: ""}
+    StatusMap["STATUS_PUBKEY_ERROR"] = &Status{Code : 4, Msg : "公钥不正确",CheckCode: ""}
+    StatusMap["CHECKCODE_ERROR"] = &Status{Code : 5, Msg : "CheckCode有误,请确认CheckCode是否和一次验证传递一致",CheckCode: ""}
+    StatusMap["STATUS_PARAM_ERROR"] = &Status{Code : 6, Msg : "sign加密错误,请检查参数是否正确",CheckCode: ""}
+    StatusMap["STATUS_VERIFY_ERROR"] = &Status{Code : 7, Msg : "一次验证错误",CheckCode: ""}
+    StatusMap["STATUS_SERVER_ERROR"] = &Status{Code : 8, Msg : "点触服务器异常",CheckCode: ""}
+    StatusMap["STATUS_HTTP_ERROR"] = &Status{Code : 9, Msg : "http请求异常",CheckCode: ""}
+    StatusMap["STATUS_JSON_TRANS_ERROR"] = &Status{Code : 10, Msg : "json转换异常,可能是请求地址有误,请检查请求地址(http://[checkAddress].touclick.com/sverify.touclick?参数)",CheckCode: ""}
+    StatusMap["STATUS_CHECKADDRESS_ERROR"] = &Status{Code : 11, Msg : "二次验证地址不合法",CheckCode: ""}
+    StatusMap["SIGN_ERROR"] = &Status{Code : 12, Msg : "签名校验失败,数据可能被篡改",CheckCode: ""}
     checkAddressPattern,_ = regexp.Compile("^[_\\-0-9a-zA-Z]+$")
 }
 
@@ -132,7 +134,7 @@ func (t *Touclick) Check(check_address,sid,token,user_name,user_id string) *Stat
             }
             sign := _sign(retParams,t.priKey)
             if sign == r.Sign{
-                return &Status{Code : r.Code,Msg : r.Message}
+                return &Status{Code : r.Code,Msg : r.Message, CheckCode : r.CKCode}
             }
             return StatusMap["SIGN_ERROR"]
         }

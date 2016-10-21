@@ -43,8 +43,8 @@ func verifyHandler(w http.ResponseWriter, req *http.Request){
      // if username and password check successfully,you can call Callback
      tc.Callback(check_address,sid,token,true)
   }
-  fmt.Println("code: " + strconv.Itoa(status.Code) + ", msg: " + status.Msg)
-  w.Write([]byte("code: " + strconv.Itoa(status.Code) + ", msg: " + status.Msg))
+  fmt.Println("code: " + strconv.Itoa(status.Code) + ", msg: " + status.Msg + ", ckCode: "+ status.CheckCode)
+  w.Write([]byte("code: " + strconv.Itoa(status.Code) + ", msg: " + status.Msg + ", ckCode:" + status.CheckCode))
 }
 
 func main(){
